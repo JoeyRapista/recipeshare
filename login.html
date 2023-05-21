@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./imgs/logo.svg">
+    <!-- MATERIALIZE CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- ALPINEJS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
+    <!-- POCKETBASE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.8.0-rc1/pocketbase.umd.js" integrity="sha512-rXvsONe8nnMbEMubzO3Oj1mXbromnFXo7jtDekeUJ4ZJ1UuJTc/HZ7qgTLw8oL6vdfxy3NL35slBflsaEwUhpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- GOOGLE MATERIAL ICONS -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+    
+    <!-- CUSTOM SCRIPTS AND CSS -->
+    <script src="./scripts/login.js"></script> 
+    <link rel="stylesheet" href="./css/style.css">
+    <title>RecipeMaster - Login</title>
+</head>
+<body x-data="login">
+    <div class="row"> 
+        <!-- START LOGIN --> 
+        <div  x-show="mode==='login'" class="col s12 l3 offset-m3 offset-l4" style="margin-top: 40px;" x-transition:enter.scale.origin.top>
+          <div class="card">
+            <div class="card-content black-text">
+                <div class="center-align"> 
+                    <h3>
+                        <span class="red-text text-lighten-3">Recipe</span><span><strong class="grey-text text-darken-3">Master</strong></span>
+                    </h3> 
+                    <h5>Login</h5> 
+                    <span x-show="loginData.isLoading" class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-green-only">
+                          <div class="circle-clipper left">
+                            <div class="circle"></div>
+                          </div><div class="gap-patch">
+                            <div class="circle"></div>
+                          </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                          </div>
+                        </div>
+                    </span>
+                </div>
+                <form>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input x-model="loginData.username" id="username" type="text" class="validate">
+                            <label for="username">Email or Username</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input x-model="loginData.password" id="password" type="password" class="validate">
+                            <label for="password">Password</label>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <button x-on:click.prevent="login" x-bind:class="loginData.isLoading ? 'disabled': ''" class="col s12 btn waves-effect waves-light" type="submit" name="action">
+                            Login  
+                        </button>
+                        <div class="col s12">
+                            <p class="center-align" style="font-size: 12px; padding-top: 5px;">
+                                <a href="#forgot-password" x-on:click="console.log('Forgot password mode')">Forgot password?</a>
+                            </p>
+                            <p class="center-align" style="font-size: 12px; padding-top: 5px;">
+                                No account? <a href="#register" x-on:click="mode='register'" >Register now!</a>
+                            </p>
+                        </div>
+                    </div>
+                </form> 
+            </div> 
+          </div>
+        </div>
+        <!-- END LOGIN -->
+        <!-- START REGISTER -->
+        <div x-show="mode==='register'" class="col s12 l6 offset-l3" style="margin-top: 40px;" x-transition:enter.scale.origin.top>
+            <div class="card">
+              <div class="card-content black-text">
+                  <div class="center-align"> 
+                      <h3>
+                          <span class="red-text text-lighten-3">Recipe</span><span><strong class="grey-text text-darken-3">Master</strong></span>
+                      </h3>  
+                      <h5>Register</h5> 
+                      <span x-show="registerData.isLoading" class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-green-only">
+                          <div class="circle-clipper left">
+                            <div class="circle"></div>
+                          </div><div class="gap-patch">
+                            <div class="circle"></div>
+                          </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                          </div>
+                        </div>
+                    </span>
+                  </div> 
+                  
+                  <form>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input x-model="registerData.username" id="register-username" type="text" class="validate">
+                            <label for="register-username">Username</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input x-model="registerData.email" id="register-email" type="email" class="validate">
+                            <label for="register-email">Email</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input x-model="registerData.password" id="register-password" type="password" class="validate">
+                            <label for="register-password">Password</label>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input x-model="registerData.confirmPassword" id="register-confirm-password" type="password" class="validate">
+                            <label for="register-confirm-password">Confirm Password</label>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <button x-on:click.prevent="register" x-bind:class="registerData.isLoading ? 'disabled': ''" class="col s12 btn waves-effect waves-light" type="submit" name="action">
+                            Register 
+                        </button>
+                        <div class="col s12"> 
+                            <p class="center-align" style="font-size: 12px; padding-top: 5px;">
+                                Already have an account? <a href="#login" x-on:click="mode='login'" >Login</a>
+                            </p>
+                        </div>
+                    </div>
+                </form> 
+              </div> 
+            </div>
+          </div>
+          <!-- END REGISTER -->
+    </div>
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> 
+<!--  MATERIALIZE SCRIPT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
+   

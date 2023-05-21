@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./imgs/logo.svg">
+    <!-- MATERIALIZE CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- ALPINEJS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
+    <!-- POCKETBASE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.8.0-rc1/pocketbase.umd.js" integrity="sha512-rXvsONe8nnMbEMubzO3Oj1mXbromnFXo7jtDekeUJ4ZJ1UuJTc/HZ7qgTLw8oL6vdfxy3NL35slBflsaEwUhpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- GOOGLE MATERIAL ICONS -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+    <!-- EXTRAS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- CUSTOM SCRIPTS AND CSS -->
+    <script src="./scripts/index.js"></script>    
+    <link rel="stylesheet" href="./css/style.css">
+    <title>RecipeMaster</title>
+</head>
+
+<body x-data="main" class="pink lighten-5"> 
+    <!-- START HEADER -->
+    
+    <header x-data="components"> 
+       <div class="navbar-fixed"> 
+           <nav class="red lighten-1"> 
+               <div class="nav-wrapper"> 
+                   <div class="container">    
+                       <a href="#!" class="brand-logo">
+                           <span class="red-text text-lighten-3">Recipe</span><span><strong class="grey-text text-darken-3">Master</strong></span>
+                       </a>
+                       <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons">menu</i></a>  
+                       <ul class="right hide-on-med-and-down">
+                           <li x-bind:class="activeTab === 'recipes' ? 'active' : ''"><a x-on:click="renderPage('recipes')">Recipes</a></li>
+                           <li x-bind:class="activeTab === 'favorites' ? 'active' : ''"><a x-on:click="renderPage('favorites')">Favorites</a></li>
+                           <li x-bind:class="activeTab === 'myRecipes' ? 'active' : ''"><a x-on:click="renderPage('myRecipes')">My Recipes</a></li>
+                           <li><a  class="dropdown-trigger" href="#!" data-target="account-menu-dropdown">Account<i class="material-icons right">arrow_drop_down</i></a></li>
+                       </ul>  
+                       <ul id='account-menu-dropdown' class='dropdown-content'>
+                           <li><a class="grey-text modal-trigger"  href="#profile" ><i class="material-icons">person</i>Profile</a></li>
+                           <li class="divider" tabindex="-1"></li>  
+                           <li><a href="#" x-on:click="logout()"><i class="material-icons">logout</i>Log out</a></li>
+                       </ul> 
+                   </div>
+               </div>
+           </nav> 
+       </div>
+                <ul class="sidenav pink lighten-5" id="mobile-sidebar">
+                    <li><a class="subheader">Menu</a></li>
+                    <li class="sidenav-close" x-bind:class="activeTab === 'recipes' ? 'active' : ''"><a x-on:click="renderPage('recipes')" x-bind:class="activeTab === 'recipes' ? 'red-text lighten-5': ''"><i x-bind:class="activeTab === 'recipes' ? 'red-text lighten-5': ''" class="material-icons">menu_book</i> Recipes</a></li>
+                    <li class="sidenav-close" x-bind:class="activeTab === 'favorites' ? 'active' : ''"><a x-on:click="renderPage('favorites')" x-bind:class="activeTab === 'favorites' ? 'red-text lighten-5': ''"><i x-bind:class="activeTab === 'favorites' ? 'red-text lighten-5': ''" class="material-icons">favorite</i>Favorites</a></li>
+                    <li class="sidenav-close" x-bind:class="activeTab === 'myRecipes' ? 'active' : ''"><a x-on:click="renderPage('myRecipes')" x-bind:class="activeTab === 'myRecipes' ? 'red-text lighten-5': ''"><i x-bind:class="activeTab === 'myRecipes' ? 'red-text lighten-5': ''" class="material-icons">book</i>My Recipes</a></li>
+                    
+                    <li><a class="subheader">Account</a></li>
+                    <li class="sidenav-close"><a class="modal-trigger" href="#profile"><i class="material-icons">person</i>Profile</a></li>  
+                    <li><a x-on:click="logout"><i class="material-icons">logout</i>Log out</a></li>   
+                </ul>
+  
+                <!-- Profile Modal Structure -->
+                <div id="profile" class="modal">
+                  <div class="modal-content">
+                    <div class="row">
+                        <form class="col s12">
+                            <div class="row"> 
+                                <div class="col s12">
+                                    <p class="center-align">
+                                        <img class="avatar_profile_picture circle center-align" id="avatar" x-bind:src="getImgUrl(pb.authStore.model.collectionId, pb.authStore.model.id, pb.authStore.model.avatar)" alt="">
+                                    </p>
+                                </div>
+                                <div class="input-field s12"> 
+                                    <div class="file-field input-field"> 
+                                        <input type="file"> 
+                                        <div class="file-path-wrapper">
+                                          <input class="file-path validate" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">badge</i>
+                                    <input x-model="pb.authStore.model.username" placeholder="Placeholder" id="username" type="text" class="validate">
+                                    <label for="username">Username</label>
+                                </div>
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">account_circle</i>
+                                    <input x-model="pb.authStore.model.name" id="fullname" type="text" class="validate">
+                                    <label for="fullname">Fullname</label>
+                                </div>
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">email</i>
+                                    <input x-model="pb.authStore.model.email" id="email" type="email" class="validate">
+                                    <label for="email">Email</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>  
+                  </div>
+                  <div class="modal-footer">
+                      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                      <a href="#!" class="modal-close waves-effect waves-green red lighten-1 btn disabled">Save Changes</a>
+                  </div>
+                </div>
+    </header> 
+    <!-- END HEADER --> 
+    <div class="container">  
+        <!-- START SEARCH FORM -->
+         
+        <div x-show="activeTab === 'recipes'" class="row">
+            <form class="col s12" style="margin-top: 10px;">
+              <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">search</i>
+                    <input id="icon_prefix" type="text" class="validate">
+                    <label for="icon_prefix">Search recipe</label>
+                  <span class="helper-text" data-error="wrong" data-success="right">Enter recipe keyword e.g. adobo, bicol express etc...</span>
+                </div> 
+              </div>
+            </form>
+        </div>
+       
+        <!-- END SEARCH FORM -->
+
+ 
+        <!-- START SEARCH INDICATOR -->
+        <!-- <div class="row">
+            <div class="col s12">
+                Results for "Adobo"
+                <a href="" class="btn green">Clear</a>
+            </div>
+        </div> -->
+        <!-- END SEARCH INDICATOR --> 
+
+        <!-- START FAB -->
+        
+        <div class="fixed-action-btn">
+            <a href="#new_recipe_modal" class="modal-trigger waves-effect waves-light btn-floating btn-large red lighten-1">
+                <i class="large material-icons">add</i>
+            </a> 
+        </div>
+        
+        <!-- END FAB --> 
+        <!-- START CREATE RECIPE MODAL -->
+                <!-- Modal Structure -->
+                <div id="new_recipe_modal" class="modal modal-fixed-footer">
+                    <div class="modal-content">
+                      <div class="row">
+                        <h4>New Recipe</h4>
+                        <span x-show="isCreateRecipeLoading" class="preloader-wrapper small active">
+                            <div class="spinner-layer spinner-green-only">
+                              <div class="circle-clipper left">
+                                <div class="circle"></div>
+                              </div><div class="gap-patch">
+                                <div class="circle"></div>
+                              </div><div class="circle-clipper right">
+                                <div class="circle"></div>
+                              </div>
+                            </div>
+                        </span>
+                          <form class="col s12">
+                              <div class="row">
+                                    <div class="input-field col s12"> 
+                                        <input x-model="newRecipe.name" placeholder="Recipe name" id="name" type="text" class="validate">
+                                        <label for="name">Recipe name</label>
+                                    </div>
+                                    <div class="input-field col s12"> 
+                                        <input x-model="newRecipe.video_link" placeholder="Video link" id="video_link" type="text" class="validate">
+                                        <label for="video_link">Youtube video link</label>
+                                    </div>
+                                    <div class="input-field col s12"> 
+                                        <input x-model="newRecipe.cooking_time" placeholder="Cooking time" id="cooking_time" type="text" class="validate">
+                                        <label for="cooking_time">Cooking time</label>
+                                    </div>
+                                    <div class="input-field col s12"> 
+                                        <input x-model="newRecipe.preparation_time" placeholder="Preparation time" id="preparation_time" type="text" class="validate">
+                                        <label for="preparation_time">preparation_time time</label>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <textarea x-model="newRecipe.description" id="newRecipeDescription" class="materialize-textarea"></textarea>
+                                        <label for="newRecipeDescription">Description</label>
+                                    </div>
+  
+                                    <div class="file-field input-field col s12">
+                                        <div class="btn">
+                                          <span>Cover Image</span>
+                                          <input id="cover_img" type="file">
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                          <input class="file-path validate" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col s12">
+                                        <label for="newRecipeIngredients">Ingredients</label>
+                                        <div id="newRecipeIngredients"> 
+                                        </div> 
+                                    </div>
+                                    <div class="col s12">
+                                        <label for="newRecipeInstructions">Instructions</label>
+                                        <div id="newRecipeInstructions"> 
+                                        </div> 
+                                    </div>
+
+                              </div>
+                          </form>
+                      </div>  
+                    </div>
+                    <div class="modal-footer">
+                        <a class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+                        <a x-on:click="createRecipe" x-bind:class="isCreateRecipeLoading ? 'disabled': ''"  class="waves-effect waves-green red lighten-1 btn">Save</a>
+                    </div>
+                </div>
+
+        <!-- END CREATE RECIPE MODAL -->
+        <div x-html="mainPage"></div>
+ 
+       
+    </div>
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> 
+    <!-- EXTRAS --> 
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <!--  MATERIALIZE SCRIPT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

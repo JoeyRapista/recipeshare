@@ -1,0 +1,18 @@
+.main-title {
+    background: linear-gradient(to left, rgba(255, 255, 255, 0), rgb(255, 124, 124));
+    }
+.comment-text {
+    font-size: 12px;
+} 
+.profile_picture{
+    height: 45px;
+    border-radius: 50%;
+}
+ul.dropdown-content {
+    width: auto !important; 
+}
+.avatar_profile_picture {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+}
