@@ -31,7 +31,7 @@ document.addEventListener('alpine:init', () => {
             // listen to file input changes and add the selected files to the form data
             fileInput.addEventListener('change', function () {
                 for (let file of fileInput.files) {
-                    this.newRecipeFormData.append('documents', file);
+                    this.newRecipeFormData.append('cover_img', file);
                 }
                 console.log(this.newRecipeFormData)
             }); 
